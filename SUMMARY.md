@@ -16,5 +16,6 @@
 ## Operating System Concepts
 
 * [Chapter 1 Introduction](operating-system-concepts/chapter-1-introduction/README.md)
+  * [1.1 What Operating Systems Do](operating-system-concepts/chapter-1-introduction/1.1-what-operating-systems-do.md)
   * [1.2 Computer-System Organization](operating-system-concepts/chapter-1-introduction/1.2-computer-system-organization.md)
 

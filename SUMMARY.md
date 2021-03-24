@@ -1,6 +1,6 @@
 # Table of contents
 
-* [Initial page](README.md)
+* [TIL](README.md)
 
 ## Android Doc <a id="android-doc-1"></a>
 

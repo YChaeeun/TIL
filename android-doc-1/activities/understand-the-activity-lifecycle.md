@@ -161,3 +161,62 @@ when activity enters Resumed state, activity comes to the foreground, the system
   * you must override `onSaveInstanceState()`
   * add key-value pairs to the `Bundle` object
 
+### onRestoreInstanceState\(\)
+
+* can recover saved instance state from Bundle
+  * same Bundle that also passed to onCreate\(\)
+  * you can restore data on onCreate\(\) and also on onRestoreInstanceState\(\) by implementing it
+  * system calls onRestoreInstanceState\(\) after onStart\(\), only if saved state exists \(no need to check if saved state is null\)
+* Always call the superclass implementation of `onRestoreInstanceState()` 
+  * so the default implementation can restore the state of the view hierarchy
+* on onCreate\(\), you have to check if savedInstanceState is null or not
+  * if null, system creates a new instance of the activity
+  * if not null, restore a previous one just destroyed
+
+## Navigating between activities
+
+### **Intent**
+
+1.  specify exact activity you want to start
+2. describes the type of action you want to perform \(system select appropriate activities\)
+
+### startActivity\(\)
+
+* if newly started activity does not need to return a result
+* 1\) specify exact activity
+
+  ```kotlin
+  val intent = Intent(this, SplashActivity::class.java)
+  startActivity(intent)
+  ```
+
+* 2\) describes actions to perform
+
+  ```kotlin
+  val intent = Intent(Intent.ACTION_SEND).apply {
+      putExtra(Intent.EXTRA_EMAIL, receipientArray)
+  }
+  startActivity(intent)
+  ```
+
+### startActivityForResult\(\)
+
+* if you want to get result back from an activity when it ends
+* `startActivityForResult(Intent, int)`
+  * `int` : parameter that identifies the call
+  * result comes back through `onActivityResult(int, int, Intent)` method \(need to override\)
+* setResult\(int\)
+  * child activity can return data to its parent by `setResult()`
+    * `RESULT_CANCELED`
+    * `RESULT_OK`
+    * `RESULT_FIRST_USER`
+
+### coordinating activities
+
+* first activity is not completely stopped before the second one is created
+  * Rather, the process of starting the second one overlaps with the process of stopping the first one
+* EX\) Activity A starts Activity B
+  1. Activity A's `onPause()`
+  2. Activity B's `onCreate()` `onStart()` `onResume()` -- B has focus
+  3. Then, if Activity A is no longer visible to screen, its `onStop()` method executes
+

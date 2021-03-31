@@ -30,9 +30,9 @@ When Activity transition happens && How to handle Activity transition
 
 ## Activity or dialog appears in foreground
 
-* If new activity or dialog appears taking focus, the **covered activity** lose focus so system calls `onPause()` on it
-  * when covered returns to foreground and regain focus, system calls `onResume()`
-* If new one _completely_ covers the activity, covered activity `onPause()` and `onStop()`
+* If new activity or dialog appears taking focus, the **covered activity\(old one\)** **lose focus** so system calls `onPause()` on it
+  * when covered activity returns to foreground and regain focus, system calls `onResume()`
+* If new one _completely_ covers the activity, covered activity is in state of `onPause()` and `onStop()`
   *  when same instance of covered activity comes back, system calls `onRestart()`, `onStart()`, `onResume()`
   * if a new instance of covered activity comes back, system calls only `onStart()` and `onResume()`
 

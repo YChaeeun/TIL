@@ -10,6 +10,8 @@
   * [Restrictions on starting activities from the background](android-doc-1/activities/restrictions-on-starting-activities-from-the-background.md)
   * [Handle Activity State Changes](android-doc-1/activities/handle-activity-state-changes.md)
   * [Test your app's activities](android-doc-1/activities/test-your-apps-activities.md)
+  * [Understand Tasks and Back Stack](android-doc-1/activities/understand-tasks-and-back-stack.md)
+  * [Processes and Application Lifecycle](android-doc-1/activities/processes-and-application-lifecycle.md)
 * [App Architecture](android-doc-1/app-architecture/README.md)
   * [Handling Lifecycles](android-doc-1/app-architecture/handling-lifecycles.md)
   * [Saving UI States](android-doc-1/app-architecture/saving-ui-states.md)
@@ -23,8 +25,4 @@
 ## Kotlin
 
 * [Kotlin Coroutine의 이해와 활용](kotlin/kotlin-coroutine.md)
-
----
-
-* [Understand Tasks and Back Stack](understand-tasks-and-back-stack.md)
 

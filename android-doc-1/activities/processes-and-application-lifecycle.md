@@ -13,3 +13,14 @@ It's important to understand ****how different application components -- `Activi
 
 * Not using these components correctly can result in the system killing the application's process while it is do
 
+### importance hierarchy of process types
+
+* system determines which process to be killed when low on memory
+
+1. foreground process
+2. visible process
+3. service process
+4. cached process
+
+
+

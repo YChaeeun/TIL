@@ -22,6 +22,7 @@
   * [1.1 What Operating Systems Do](operating-system-concepts/chapter-1-introduction/1.1-what-operating-systems-do.md)
   * [1.2 Computer-System Organization](operating-system-concepts/chapter-1-introduction/1.2-computer-system-organization.md)
   * [1.3 Computer-System Architecture](operating-system-concepts/chapter-1-introduction/1.3-computer-system-architecture.md)
+  * [1.4 Operating-System Structure](operating-system-concepts/chapter-1-introduction/1.4-operating-system-structure.md)
 
 ## Kotlin
 

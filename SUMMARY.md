@@ -15,6 +15,8 @@
 * [App Architecture](android-doc-1/app-architecture/README.md)
   * [Handling Lifecycles](android-doc-1/app-architecture/handling-lifecycles.md)
   * [Saving UI States](android-doc-1/app-architecture/saving-ui-states.md)
+* [Testing](android-doc-1/testing/README.md)
+  * [Fundamentals of Testing](android-doc-1/testing/fundamentals-of-testing.md)
 
 ## Operating System Concepts
 

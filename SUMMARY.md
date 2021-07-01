@@ -40,4 +40,5 @@
 * [5장](kotlin-in-action/5.md)
 * [6장](kotlin-in-action/6.md)
 * [7장](kotlin-in-action/7.md)
+* [8장](kotlin-in-action/8.md)
 

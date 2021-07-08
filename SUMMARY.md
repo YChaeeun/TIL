@@ -27,6 +27,10 @@
   * [1.4 Operating-System Structure](operating-system-concepts/chapter-1-introduction/1.4-operating-system-structure.md)
   * [1.5 Operating-System Operations](operating-system-concepts/chapter-1-introduction/1.5-operating-system-operations.md)
 
+## JAVA
+
+* [제네릭스 Generics](java/generics.md)
+
 ## Kotlin
 
 * [Kotlin Coroutine의 이해와 활용](kotlin/kotlin-coroutine.md)

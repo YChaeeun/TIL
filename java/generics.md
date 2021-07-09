@@ -83,5 +83,162 @@ fruitBox.add(new Apple()); // 요것도 가능~! Fruit item 을 넣을 수 있�
 
 
 
+## 제한된 제네릭 클래스
 
+* extends 를 사용하면 해당 타입의 자식들만 대입할 수 있도록 타입을 제한할 수 있다
+
+  ```kotlin
+  class FruitBox<T extends Fruit> { // Fruit 의 자식 타입만 대입 가능
+      ArrayList<T> list = new ArrayList<T>();
+  }
+
+  // 인터페이스로 제약할 때도 extends (implements 안씀)
+  interface Edible { }
+  class FruitBox<T extends Edible> { }
+
+  // 동시에 제약을 해야 한다면 & 사용
+  class FruitBox<T extends Fruit & Edible> { }
+  ```
+
+
+
+## 와일드 카드 ?
+
+* static 메서드에서는 제네릭 타입을 쓸 수 없으므로, 만약 Fruit 타입으로 대입한 FruitBox 를 인자로 받게 한 경우, 해당 메서드는 무조건 Fruit 타입한테만 쓸 수 있다 \(하위 타입인 Apple, Grape에서는 못써\)
+
+  * 그런데, 그렇다고 Fruit 타입, Apple 타입, Grape 타입 이렇게 타입만 다른 메소드를 오버로딩 하게 할 수도 없다ㅠ --&gt; 제네릭 타입이 다른 것 만으로는 오버로딩이 성립하지 않음
+
+  ```java
+  class Juicer {
+      static Juice makeJuice(FruitBox<Fruit> box) { // Fruit 로 타입을 대입
+      }
+    
+      // 그렇다고 오버로딩 하는 건 안됨
+      // 다른 메서드로 인정이 안됨,,,, 다형성 성립 X
+      static Juice makeJuice(FruitBox<Apple> box) { }
+      static Juice makeJuice(FruitBox<Grape> box) { }
+  }
+
+  Juicer.makeJuice(fruitBox); // Fruit 타입일 때만 사용 가능
+  Juicer.makeJuice(Apple); // (X) Apple 이 Fruit 의 자식이어도 사용 불가
+  ```
+
+* 이럴 경우 와일드 카드 ? 를 쓴다~!
+
+  * 와일드 카드는 어떠한 타입도 될 수 있음
+  * extends, super 로 상하한을 제한할 수 있음
+    * `<? extends T>` : 상한 제한, T와 그 자식들만 가능
+    * `<? super T>` : 하한 제한, T 와 그 조상들만 가능
+    * `<?>` : 제한 없음, 모든 타입 가능 &lt;? extends Object&gt; 랑 같음
+
+  ```java
+  class Juicer {
+      static Juice makeJuice(FruitBox<? extends Fruit> box) {
+                                  // Fruit와 그 자식들 가능
+      }    
+  }
+  ```
+
+* 와일드 카드 super 의 예
+  * Comparator&lt;? super Apple&gt; 가능한 타입
+    * Comparator&lt;Apple&gt;, Comparator&lt;Fruit&gt;, Comparator&lt;Object&gt;
+  * Comparator&lt;? super Grape&gt;
+    * Comparator&lt;Grape&gt;, Comparator&lt;Fruit&gt;, Comparator&lt;Object&gt;
+
+
+
+## 제네릭 메서드
+
+* 메서드 선언부에 제네릭 타입이 선언된 메서드를 제네릭 메서드라고 함
+  * ```java
+    class FruitBox<T> { // 얘랑 
+        static <T> void sort(List<T> list, Comparator<? super T> c { // 얘 T는 다른거
+        }
+    }
+
+    // 앞에 makeJuice 를 바꾸면 
+    static <T extends Fruit> Juice makeJuice(FruitBox<T> box) {
+    }  
+
+    Juicer.<Fruit>makeJuice(fruitBox);
+    Juicer.makeJuice(fruitBox); // 타입 추론이 가능할 경우 타입 생략 가능
+    ```
+
+    * 이때 제네릭 클래스에 정의된 타입 매개변수랑\(FruitBox의 T\), 제네릭 메서드에 정의된 타입 매개변수 &lt;T&gt; void sort\(T\)는 전혀 다른 것!!
+      * 같은 타입 문자 T 를 썼지만 다른거
+  * static 멤버에는 타입 매개변수를 사용할 수 없지만, 메서드에 제네릭 타입을 선언하고 사용하는 것은 가능하다!
+    * 왜냐면 이건 지역 변수를 선언한 것과 같기 때문
+  * 코드를 간략하게 만들 수도 있음
+
+    ```java
+    public static void printAll(
+            ArrayList<? extends Product> list, 
+            ArrayList<? extends Product list2) {}
+
+    // 간략하게 하면
+    public static <T extends Product> void printAll( // 타입 중복된 부분을 뽑아줌
+            ArrayList<T> list, 
+            ArrayList<T> list2){}
+        
+    /* ----------------------------- */
+    public static <T extends Comparable<? super T>> void sort(List<T> list)
+            // T extends Comparable : T는 Comparable를 구현한 클래스여야 하고
+            // Comparable<? super T> : T 또는 그 조상을 비교하는 Comparable
+
+    // 간략하게 하면
+    public static <T extends Comparable<T>> void sort(List<T> list)
+    ```
+
+## 제네릭 타입의 형변환
+
+* 불가능
+  * 대입 타입이 다른 제네릭 타입 \(Object 여도 불가능\)
+* 가능
+  * 제네릭 타입 --&gt; 원시 타입 / 원시타입 --&gt; 제네릭 타입 \(경고 발생\)
+  * 와일드 카드 ?
+    * &lt;String&gt; --&gt; &lt;? extends Object&gt;
+    * &lt;? extends Object&gt; --&gt; &lt;String&gt; \(미확인 타입으로 형변환 경고 발생\)
+    * &lt;? extends Object&gt; --&gt; &lt;? extends String&gt; / &lt;? extends String&gt; --&gt; &lt;? extends Object&gt; \(미확정 타입으로 형변환 경고\)
+
+```java
+// 불가능
+Box<Object> objBox = null;
+Box<String> strBox = (Box<String>)objBox; // (X) 안됨!
+
+Box<Object> objBox = new Box<String>(); // (X) 안됨!!!
+
+
+// 가능 - 제네릭 -> 원시 / 원시 -> 제네릭
+Box box            = null;
+Box<Object> objBox = null;
+
+box    = (Box)objBox;        // 경고 발생
+objBox = (Box<Object>)box;   // 경고 발생
+
+// 가능 - 와일드 카드
+Box<? extends Object> wBox = new Box<String>();
+
+FruitBox<? extends Fruit> box = null;
+FruitBox<Apple> appleBox = (FruitBox<Apple>)box; // 미확인 타입으로 형변환 경고
+
+FruitBox<? extends Object> objBox = null;
+FruitBox<? extends String> strBox = (FruitBox<? extends String>)objBox; // 미확정 타입으로 형변환 경고
+
+
+```
+
+## 제네릭 타입의 제거
+
+* 컴파일러는 제네릭 타입을 이용해서 소스파일을 체크, 필요한 곳에 형변환을 넣어준 뒤 제네릭 타입을 제거함
+  * 즉, 컴파일 된 파일\(\*.class\) 에는 제네릭 타입에 대한 정보가 없음
+  * 제네릭 도입 이전의 소스코드와의 호환성을 유지하기 위해 도입되었음
+    * 앞으로 가능하면 원시 타입을 쓰지 말자\(????\)
+* 기본적인 제거 과정
+  1. 제네릭 타입의 경계 bound 를 제거
+     * &lt;T extends Fruit&gt; 라면 T는 Fruit 로 치환됨
+     * &lt;T&gt; 인 경우 T는 Object 로 치환됨
+     * class Box&lt;T extends Fruit&gt; { } 의 경우 클래스 옆 선언 제거 --&gt; class Box { }
+  2. 제네릭 타입 제거 후 타입이 일치하지 않으면 형변환 추가
+     * **T** get\(int i\) { } --&gt; **Fruit** get\(int i\) { }
+     * 와일드 카드가 포함되어 있는 경우에도 적절한 타입으로의 형변환이 추가됨
 

@@ -30,6 +30,7 @@
 ## JAVA
 
 * [제네릭스 Generics](java/generics.md)
+* [쓰레드 Thread](java/thread.md)
 
 ## Kotlin
 

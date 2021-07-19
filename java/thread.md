@@ -367,13 +367,77 @@ try {
 
 ### synchronized를 이용한 동기화
 
-* 메서드 전체를 임계 영역으로 지정 or 특정한 영역을 임계 영역으로 지정
+* 방법 1. 메서드 전체를 임계 영역critical section으로 지정
+  * 쓰레드는 synchronized 메서드가 호출된 시점부터 lock 을 얻어서 작업을 수행하다가 메서드가 종료되면 lock 을 반환한다
+* 방법 2. 특정 영역을 임계critical section으로 지정
+  * synchronized \(참조 변수\)는 락을 걸고자 하는 객체를 참조해야 하고, 이 블럭을 synchronized블럭이라고 부른다
+  * 블럭의 영역에 들어가면 지정된 객체의 lock을 얻고, 벗어나면 lock을 반납
+* 자동으로 lock을 얻고 반납하기 때문에 영역을 지정만 해주면 됨
+  * critical section 은 멀티 쓰레드 프로그램의 성능을 좌우하기 때문에, 가능하면 critical section을 최소화해서 효율적인 프로그램을 작성해야 함
 
-  ```java
-  // 메서드 전체를 임계 영역으로
-  public synchronized void calcSum() { }
+```java
+// 메서드 전체를 임계 영역으로
+public synchronized void calcSum() { }
 
-  // 특정한 영역을 임계 영역으로
-  synchronized(객체의 참조변수) { }
-  ```
+// 특정한 영역을 임계 영역으로
+synchronized(객체의 참조변수) { }
+```
+
+
+
+### wait\(\) & notify\(\)
+
+* 특정 쓰레드가 락을 너무 오래 가지지 않도록 하는 것도 중요
+  * 계속 잡고 있게 되면 다른 쓰레드는 작업을 못하고 계속 기다려야 함 ㅇㅅㅇ
+* wait\(\) & notify\(\) 는 Object 클래스에 정의되어 있음
+* wait\(\)
+  * 동기화된 임계 영역critical section의 코드를 수행하다가, 더 작업을 할 상황이 아니면 일단 wait\(\)을 호출해서 lock을 반환하고 대기,,
+  * 매개변수가 없을 경우 notify\(\), notifyAll\(\) 이 호출될 때 까지 대기하지만, 매개변수 있을 경우 해당 시간만큼만 대기함 \(자동으로 notify\(\) 호출하는 거랑 같음\)
+* notify\(\)
+  * notify\(\)를 호출하면 기다리던 쓰레드 중 하나가 lock을 다시 얻고 작업 진행
+  * wait\(\) 으로 반환 후에 notify\(\)로 다시 얻어서 임계 영역에 진입하는 것을 재진입reenterance라고 함
+* 단, 오래 기다린 쓰레드가 락을 얻는 다는 보장이 없음
+  * wait\(\)를 호출하면 해당 쓰레드는 lock을 반환하고 waiting pool에서 대기
+  * notify\(\)가 호출되면, 해당 객체의 waiting pool 에 있던 쓰레드 중에 임의의 쓰레드만 통지?를 받음
+    * notifyAll\(\) 로 waiting pool 에 있는 모든 쓰레드에게 통지를 할 수는 있는데 그래도 lock를 얻는 건 하나의 쓰레드
+
+### 기아 starvation & 경쟁 race condition
+
+* 기아 starvation
+  * 쓰레드가 계속 lock을 받지 못하고 오래동안 기다리는 상태
+  * notify\(\) 대신 notifyAll\(\) 를 호출하면 이 현상을 막을 수 있음 -- ?
+* 경쟁 race condition
+  * 여러 쓰레드가 lock을 얻기 위해서 경쟁하는 상태
+  * 이를 개선하기 위해서는 쓰레드를 구분해서 통지하는 것이 필요함 --&gt; Lock과 Condition을 이용한 동기화
+
+## Lock과 Condition을 이용한 동기화
+
+* 같은 메서드 내에서만 lock을 걸 수 있는 제약이 불편할 때 사용하는 lock 들
+
+### ReentranctLock
+
+* 재진입이 가능한 Lock 
+  * wait\(\) notify\(\) 처럼 특정 조건에서 lock을 풀고 다시 lock을 얻을 수 있음
+* 가장 배타적
+  * lock 이 반드시 있어야만 임계 영역의 코드를 수행할 수 있음
+
+### ReentrantReadWriteLock
+
+* 읽기에는 공유적이고, 쓰기에는 배타적인 lock
+  * 읽기 lock 이 이미 걸려 있어도, 중복적으로 lock을 걸 수 있음
+    * 읽는 건 여러 쓰레드가 같이 읽어도 됨~!
+  * 단, 쓰기의 경우 값이 변경되는 거니까 쓰려면 쓰기 lock을 걸어야만 가능
+
+### StampedLock
+
+* ReentrantReadWriteLock에 낙관적인 lock 기능 추가
+  * lock 을 걸고 해지할 때 스탬프\(long 타입의 정수값\)을 사용
+  * 낙관적 읽기 lock \(optimistic reading lock\)
+    * ReentrantReadWriteLock의 경우에 쓰기 lock을 얻으려면 읽기 lock이 풀릴 때 까지 기다려야 하는데, 낙관적 읽기 lock의 경우 쓰기 lock에 의해 바로 풀림
+    * 따라서 낙관적 읽기에 실패하면, 읽기 lock을 얻어서 다시 읽어와야 함
+  * 무조건 읽기 lock을 걸지 않고, **쓰기와 읽기가 충돌할 때만 쓰기가 끝난 후, 읽기 lock을 거는 것**
+
+
+
+
 

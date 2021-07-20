@@ -437,7 +437,100 @@ synchronized(객체의 참조변수) { }
     * 따라서 낙관적 읽기에 실패하면, 읽기 lock을 얻어서 다시 읽어와야 함
   * 무조건 읽기 lock을 걸지 않고, **쓰기와 읽기가 충돌할 때만 쓰기가 끝난 후, 읽기 lock을 거는 것**
 
+```java
+int getBalance() {
+    long stamp = lock.tryOptimisticRead(); // 낙관적 읽기 lock 걸기
+    int curBalance = this.balance;    // 공유 데이터 읽기
+    
+    if (!lock.validate(stamp)) { // 쓰기 lock에 의해 낙관적 읽기 lock이 풀렸는지 확인
+        stamp = lock.readLock();    // lock이 풀렸으면 읽기 lock 얻기위해서 대기
+        
+        try {
+            curBalance = this.balance;  // 공유 데이터 다시 읽기
+        } finally {
+            lock.unlockRead(stame);    // 읽기 lock 해제
+        }
+    }
+    
+    return curBalance; // 낙관적 읽기 lock 이 풀리지 않았으면 읽어온 값 바로 반환
+}
+```
 
+
+
+### ReentrantLock 생성자
+
+```java
+ReentrantLock()
+
+ReentrantLock(boolean fair)
+    // fair=true 일 때, 가장 오래 기다린 쓰레드가 lock을 획득할 수 있게 처리
+    // 어떤 쓰레드가 가장 오래걸렸는지 확인이 필요하므로 성능이 떨어짐
+```
+
+```java
+void lock()            // lock 잠금
+void unlock()          // lock 해지
+boolean isLocked()     // lock 이 잠겼는지 확인
+
+// synchronized 블럭과 달리 수동으로 잠금과 해지가 이뤄지기 때문에 안까먹게 주의!!
+ReentrantLock lock = new ReentrantLock();
+lock.lock();
+try {
+
+} finally {
+    lock.unlock();
+}
+```
+
+
+
+### ReentrantLock 과 Condition
+
+* Condtion을 만들어서 각각의 waiting pool 을 만들어서 대기하게 함
+
+  * wait\(\) & notify\(\)로 쓰레드의 종류를 구분하지 않고, 공유 객체의 waiting pool 에 몰아 넣을 때 생길 수 있는 단점 해결 가능!
+  * wait\(\) 대신 await\(\) 
+    * await\(\) / awaitUninterrupibly\(\) / await\(long, TimeUnit\) / awaitNanos\(long\) / awaitUntil\(Date\)
+  * notify\(\), notifyAll\(\) 대신 signal\(\) / signalAll\(\)
+
+  ```java
+  private ReentrantLock lock = new ReentrnatLock();
+
+  private Condition forCook = lock.newCondition();
+  private Condition forCustomer = lock.newCondition();
+  ```
+
+## volatile
+
+* 값을 캐시가 아닌 메모리에서 읽어오도록 함
+  * 멀티 코어 프로세서에서는 코어별로 별도의 캐시를 가지고 있는데, 해당 캐시들은 메모리에 있는 값의 일부
+  * 만약 메모리에 저장된 값이 갱신이 되었는데, 캐시가 갱신되지 않는다면 데이터 값 간의 불일치가 발생할 수 있음
+    * volatile 을 붙이면 캐시가 아닌 메모리에서 값을 읽어오므로 불일치 해소 가능!
+    * synchronized 블럭에서 들어갔다 나올 때도 메모리와 캐시 간 동기화가 이뤄지기 때문에 값의 불일치가 해소 됨
+
+### volatile로 long과 double 원자화
+
+* JVM은 데이터를 4 byte\(=32bit\) 단위로 처리하기 때문에, int나 int 보다 작은 타입들은 한번에 읽고쓰기 가능
+  * 단 하나의 명령어로 읽거나 쓰기가 가능하다는 뜻
+* 그러나 크기가 8 byte 인 long과 double타입 변수는 하나의 명령어로 값을 읽거나 쓸 수 없어서, 중간에 다른 쓰레드가 끼어들 여지가 있음
+
+  * 이때 volatile을 붙이면 해당 변수에 대한 읽기와 쓰기가 **원자화** 됨 -- 작업을 더이상 나눌 수 없다는 뜻
+  * 주의\) 원자화와 동기화는 다름! 
+
+  ```java
+  volatile long balance;
+
+  synchronized int getBalance() {
+      return balance;
+  }
+
+  synchronized void withdraw(int money) {
+      if(balance >= money) balance -= money
+  }
+  ```
+
+## fork & join 프레임워크
 
 
 

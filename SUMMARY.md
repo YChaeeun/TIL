@@ -13,6 +13,8 @@
 * [커맨드 패턴 Command Pattern](design-pattern/command-pattern.md)
 * [어댑터 패턴 & 퍼사드 패턴](design-pattern/and-1.md)
 * [템플릿 메소드패턴 Template Method Pattern](design-pattern/template-method-pattern.md)
+* [반복자 패턴 Iterator Pattern](design-pattern/iterator-pattern.md)
+* [컴포지트 패턴 Composite Pattern](design-pattern/composite-pattern.md)
 
 ## Weekly
 

@@ -2,7 +2,9 @@
 
 컬렉션의 구현 방법을 노출하지 않으면서 집한체 내의 모든 항목에 접근하는 방법을 제공
 
-#### 다이어그램
+
+
+### 다이어그램
 
 ![이터레이터 패턴(Iterator Pattern)](https://blog.kakaocdn.net/dn/ARh75/btqAy2u00m3/Lum3YjmKrA5iJy4VIcwPZ0/img.png)
 

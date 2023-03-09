@@ -1,4 +1,4 @@
-# Android Weekly #599 - Compose로 Pull-to-Refresh 구현하기
+# Android Weekly #559 - Compose로 Pull-to-Refresh 구현하기
 
 [https://medium.com/google-developer-experts/effortlessly-add-pull-to-refresh-to-your-android-app-with-jetpack-compose-4c8b218a9beb](https://medium.com/google-developer-experts/effortlessly-add-pull-to-refresh-to-your-android-app-with-jetpack-compose-4c8b218a9beb)
 

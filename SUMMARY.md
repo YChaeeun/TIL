@@ -20,7 +20,7 @@
 ## Weekly
 
 * [Android Weekly #558 - 안드로이드 개발의 미래](weekly/android-weekly-558.md)
-* [Android Weekly #599 - Compose로 Pull-to-Refresh 구현하기](weekly/android-weekly-599-compose-pull-to-refresh.md)
+* [Android Weekly #559 - Compose로 Pull-to-Refresh 구현하기](weekly/android-weekly-559-compose-pull-to-refresh.md)
 
 ## Android Doc <a href="#android-doc-1" id="android-doc-1"></a>
 

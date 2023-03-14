@@ -16,11 +16,13 @@
 * [템플릿 메소드패턴 Template Method Pattern](design-pattern/template-method-pattern.md)
 * [반복자 패턴 Iterator Pattern](design-pattern/iterator-pattern.md)
 * [컴포지트 패턴 Composite Pattern](design-pattern/composite-pattern.md)
+* [상태 패턴 State Pattern](design-pattern/state-pattern.md)
 
 ## Weekly
 
 * [Android Weekly #558 - 안드로이드 개발의 미래](weekly/android-weekly-558.md)
 * [Android Weekly #559 - Compose로 Pull-to-Refresh 구현하기](weekly/android-weekly-559-compose-pull-to-refresh.md)
+* [Kotlin Weekly #600 - My attempt on explaining Kotlin Coroutines](weekly/kotlin-weekly-600-my-attempt-on-explaining-kotlin-coroutines.md)
 
 ## Android Doc <a href="#android-doc-1" id="android-doc-1"></a>
 

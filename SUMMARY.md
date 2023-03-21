@@ -23,6 +23,7 @@
 * [Android Weekly #558 - 안드로이드 개발의 미래](weekly/android-weekly-558.md)
 * [Android Weekly #559 - Compose로 Pull-to-Refresh 구현하기](weekly/android-weekly-559-compose-pull-to-refresh.md)
 * [Kotlin Weekly #600 - My attempt on explaining Kotlin Coroutines](weekly/kotlin-weekly-600-my-attempt-on-explaining-kotlin-coroutines.md)
+* [Android Weekly #562 - Streamlining User Actions with the Command Pattern, A Practical Guide](weekly/android-weekly-562-streamlining-user-actions-with-the-command-pattern-a-practical-guide.md)
 
 ## Android Doc <a href="#android-doc-1" id="android-doc-1"></a>
 

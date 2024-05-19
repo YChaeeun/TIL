@@ -2,17 +2,6 @@
 
 {% embed url="https://stackoverflow.com/questions/1934715/difference-between-a-coroutine-and-a-thread" %}
 
-## 동시성concurrency vs 병렬성parallelism
-
-* 병렬은 동시성을 의미할 수 있지만, 동시성이 병렬을 의미하는 것은 아니다
-* 동시성&#x20;
-  * 두 개 이상의 알고리즘의 실행 시간이 겹쳐질 때 발생
-  * ex ) 단일 코어에서 2개 이상의 스레드의 instruction을 교차배치해서 스레드의 실행을 효율적으로 겹쳐서 실행하는 것
-* 병렬성
-  * 두 개 이상의 알고리즘이 정확히 같은 시간에 실행되는 것으로 2개 이상의 코어와 2개 이상의 스레드가 각각 같은 시간에 실행되는 것
-
-<figure><img src="../.gitbook/assets/스크린샷 2024-05-20 오전 8.17.49.png" alt=""><figcaption></figcaption></figure>
-
 ## 프로세스 process
 
 * 실행 중인 애플리케이션의 인스턴스 (애플리케이션이 시작될 때 마다 애플리케이션의 프로세스가 시작됨)
@@ -47,4 +36,18 @@
 ## 스레드 vs 코루틴
 
 * 코루틴은 빠르고 적은 비용으로 생성할 수 있다
+* 스레드는 동시 or 병렬적으로 실행될 수 있지만, 코루틴은 동시성만 가진다(병렬적으로 수행할 수 없음)
+* 스레드는 shared memory model 로 스레드 간에 데이터를 공유하다보니 race condition 발생가능성 높음 vs 코루틴은 message passing model 로, channel로 데이터를 주고받아서 덜 위험
 
+
+
+## 동시성concurrency vs 병렬성parallelism
+
+* 병렬은 동시성을 의미할 수 있지만, 동시성이 병렬을 의미하는 것은 아니다
+* 동시성&#x20;
+  * 두 개 이상의 알고리즘의 실행 시간이 겹쳐질 때 발생
+  * ex ) 단일 코어에서 2개 이상의 스레드의 instruction을 교차배치해서 스레드의 실행을 효율적으로 겹쳐서 실행하는 것
+* 병렬성
+  * 두 개 이상의 알고리즘이 정확히 같은 시간에 실행되는 것으로 2개 이상의 코어와 2개 이상의 스레드가 각각 같은 시간에 실행되는 것
+
+<figure><img src="../.gitbook/assets/스크린샷 2024-05-20 오전 8.17.49.png" alt=""><figcaption></figcaption></figure>

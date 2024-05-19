@@ -9,7 +9,7 @@ An unusual and fundamental feature of Android is that an **application process's
   * how important these things are to the user
   * how much overall memory is available in the system
 
-It's important to understand **** how different application components -- `Activity`, `Service`, and `BroadcastReceiver`  -- impact the lifetime of the application's process
+It's important to understand how different application components -- `Activity`, `Service`, and `BroadcastReceiver`  -- impact the lifetime of the application's process
 
 * Not using these components correctly can result in the system killing the application's process while it is do
 

@@ -51,3 +51,5 @@
   * 두 개 이상의 알고리즘이 정확히 같은 시간에 실행되는 것으로 2개 이상의 코어와 2개 이상의 스레드가 각각 같은 시간에 실행되는 것
 
 <figure><img src="../.gitbook/assets/스크린샷 2024-05-20 오전 8.17.49.png" alt=""><figcaption></figcaption></figure>
+
+<figure><img src="../.gitbook/assets/스크린샷 2024-05-20 오전 8.46.48.png" alt=""><figcaption></figcaption></figure>

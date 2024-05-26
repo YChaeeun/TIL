@@ -9,6 +9,7 @@
 * [2장 시퀀스 빌더](kotlin-coroutine/2.md)
 * [3장 중단은 어떻게 동작할까?](kotlin-coroutine/3.md)
 * [4장 코루틴의 실제 구현](kotlin-coroutine/4.md)
+* [6장 코루틴 빌더](kotlin-coroutine/6.md)
 
 ## Design Pattern
 

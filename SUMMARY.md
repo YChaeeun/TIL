@@ -11,6 +11,7 @@
 * [4장 코루틴의 실제 구현](kotlin-coroutine/4.md)
 * [6장 코루틴 빌더](kotlin-coroutine/6.md)
 * [7장 코루틴 컨텍스트](kotlin-coroutine/7.md)
+* [8장 잡과 자식 코루틴 기다리기](kotlin-coroutine/8.md)
 
 ## Design Pattern
 

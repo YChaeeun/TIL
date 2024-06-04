@@ -281,15 +281,14 @@ suspend fun main() = coroutineScope {
 ## 중단될 수 없는 걸 중단하기
 
 * 중단점이 없으면 취소를 할 수 없다
-
-
+  * delay 대신 Thread.sleep 으로 중단점이 없는 예시 > 중단점이 없어서 취소가 안됨
 
 ```kotlin
 suspend fun main() = coroutineScope {
     val job = Job()
     launch(job) {
         repeat(1_000) { i -> 
-            Thrad.sleep(200)
+            Thrad.sleep(200) // 복잡한 작업을 수행중이라고 가정, 중단점 없음
             println("Printing $i")
         }
     }
@@ -307,6 +306,110 @@ suspend fun main() = coroutineScope {
 ```
 
 
+
+### 해결 방법 1) `yield()` 주기적으로 호출하기
+
+* yield는 코루틴을 중단하고 즉시 재실행함 > 중단점을 제공하는 셈이므로 취소 등등의 작업을 할 수 있는 기회가 생김
+
+```kotlin
+suspend fun main() = coroutineScope {
+    val job = Job()
+    launch(job) {
+        repeat(1_000) { i -> 
+            Thrad.sleep(200) // 복잡한 작업을 수행중이라고 가정
+            yeild()
+            println("Printing $i")
+        }
+    }
+    
+    delay(1000)
+    job.cancelAndJoin()
+    println("Cancelled successfully")
+    delay(1000)
+}
+
+// Printing 0
+// Printing 1
+// Printing 2
+// Printing 3
+// Printing 4
+// Cancelled Successfullly
+```
+
+* 중단함수 내에도 CPU 집약적이거나 시간 집약적인 연산들이 있다면, 각 연산 사이에 yield 사용하면 좋다
+
+```kotlin
+suspend fun cpuIntensiveOperations() = 
+    withContext(Dispatchers.Default) {
+        cpuIntensiveOperation1()
+        yield()
+        cpuIntensiveOperation2()
+        yield()
+        cpuIntensiveOperation3()
+    }
+```
+
+
+
+### 해결 방법 2) Job 상태 추적하고 연산 중단하기
+
+* isActive() 메소드로 상태 확인하기
+* 코루틴 라이브러리는 Active 상태를 확인하는 함수 제공
+  * CoroutineScope는 coroutineContext 프로퍼티를 사용해 참조할 수 있는 컨텍스트를 가지고 있음
+
+```kotlin
+public val CoroutineScope.isActive: Boolean
+    get() = coroutineContext[Job]?.isActive ?: true
+```
+
+```kotlin
+suspend fun main() = coroutineScope {
+    val job = Job()
+    launch(job) {
+        do {
+            Thread.sleep(200)
+            println("Printing")
+        } while (isActive) // 상태를 보고 실행 중지
+    }
+    
+    delay(1100)
+    job.cancelAndJoin()
+    println("Cancelled successfully")
+}
+```
+
+
+
+### 해결 방법 3) ensureAtive() 메소드로 Active 상태가 아니면 CancellationException 던지기
+
+* 보y다 가벼워서 더 선호되는 방식
+
+```kotlin
+public fun CoroutineContext.ensureActive() {
+    get(Job)?.ensureActive()
+}
+
+public fun Job.ensureActive(): Unit {
+    if (!isActive) throw getCancellationException()
+}
+```
+
+```kotlin
+suspend fun main() = coroutineScope {
+    val job = Job()
+    launch(job) {
+        repeat(1_000) { i -> 
+            Thrad.sleep(200) // 복잡한 작업을 수행중이라고 가정
+            ensureActive()
+            println("Printing $i")
+        }
+    }
+    
+    delay(1000)
+    job.cancelAndJoin()
+    println("Cancelled successfully")
+}
+```
 
 
 

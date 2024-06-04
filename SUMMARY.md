@@ -13,6 +13,7 @@
 * [7장 코루틴 컨텍스트](kotlin-coroutine/7.md)
 * [8장 잡과 자식 코루틴 기다리기](kotlin-coroutine/8.md)
 * [9장 취소 cancellation](kotlin-coroutine/9-cancellation.md)
+* [10장 예외 처리](kotlin-coroutine/10.md)
 
 ## Design Pattern
 

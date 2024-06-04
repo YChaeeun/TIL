@@ -309,7 +309,11 @@ suspend fun main() = coroutineScope {
 
 ### 해결 방법 1) `yield()` 주기적으로 호출하기
 
-* yield는 코루틴을 중단하고 즉시 재실행함 > 중단점을 제공하는 셈이므로 취소 등등의 작업을 할 수 있는 기회가 생김
+* `yield()` - 코루틴을 중단하고 즉시 재실행하는 메소드
+  * 중단점을 제공하는 셈이므로 취소 등등의 작업을 할 수 있는 기회가 생김
+* 최상위 중단 함수로, 스코프가 필요하지 않음
+* 단, 중단하고 재개하는 과정에서 스레드 풀을 가진 디스패쳐를 사용하면 스레드가 바뀌는 문제가 생길 수 있음 (12장 참고)
+* CPU 사용량이 크거나 스레드를 블로킹하는 중단함수에서 자주 사용
 
 ```kotlin
 suspend fun main() = coroutineScope {
@@ -380,9 +384,11 @@ suspend fun main() = coroutineScope {
 
 
 
-### 해결 방법 3) ensureAtive() 메소드로 Active 상태가 아니면 CancellationException 던지기
+### 해결 방법 3) ensureActive() 메소드로 상태확인 후 예외던지기
 
-* 보y다 가벼워서 더 선호되는 방식
+* Active 상태가 아니면 CancellationException 던져서 중단
+* CoroutineScope 또는 CoroutineContext 또는 Job 에서 호출되어야함
+* yield() 보다 가벼워서 더 선호되는 방식
 
 ```kotlin
 public fun CoroutineContext.ensureActive() {
@@ -400,7 +406,7 @@ suspend fun main() = coroutineScope {
     launch(job) {
         repeat(1_000) { i -> 
             Thrad.sleep(200) // 복잡한 작업을 수행중이라고 가정
-            ensureActive()
+            ensureActive() // Active 상태가 아니라면 예외 던짐
             println("Printing $i")
         }
     }
@@ -415,9 +421,34 @@ suspend fun main() = coroutineScope {
 
 ## suspendCancellableCoroutine
 
+* CancellableContinuation\<T> 로 래핑
+* invokeOnCancellation - 코루틴이 취소되었을 때 행동을 정의하는 데 사용
 
+```kotlin
+suspend fun someTask() = suspendCancellableCoroutine { cont ->
+    cont.invokeOnCancellation {
+        // 정리 작업 수행
+    }
+    // 나머지 구현 부분
+}
+```
 
-
+```kotlin
+public suspend inline fun <T> suspendCancellableCoroutine(
+    crossinline block: (CancellableContinuation<T>) -> Unit
+): T =
+    suspendCoroutineUninterceptedOrReturn { uCont ->
+        val cancellable = CancellableContinuationImpl(uCont.intercepted(), resumeMode = MODE_CANCELLABLE)
+        /*
+         * For non-atomic cancellation we setup parent-child relationship immediately
+         * in case when `block` blocks the current thread (e.g. Rx2 with trampoline scheduler), but
+         * properly supports cancellation.
+         */
+        cancellable.initCancellability()
+        block(cancellable)
+        cancellable.getResult()
+    }
+```
 
 
 

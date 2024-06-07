@@ -14,6 +14,7 @@
 * [8장 잡과 자식 코루틴 기다리기](kotlin-coroutine/8.md)
 * [9장 취소 cancellation](kotlin-coroutine/9-cancellation.md)
 * [10장 예외 처리](kotlin-coroutine/10.md)
+* [11장 코루틴 스코프 함수](kotlin-coroutine/11.md)
 
 ## Design Pattern
 

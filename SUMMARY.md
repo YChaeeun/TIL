@@ -15,6 +15,8 @@
 * [9장 취소 cancellation](kotlin-coroutine/9-cancellation.md)
 * [10장 예외 처리](kotlin-coroutine/10.md)
 * [11장 코루틴 스코프 함수](kotlin-coroutine/11.md)
+* [12장 디스패처](kotlin-coroutine/12.md)
+* [13장 코루틴 스코프 만들기](kotlin-coroutine/13.md)
 
 ## Design Pattern
 

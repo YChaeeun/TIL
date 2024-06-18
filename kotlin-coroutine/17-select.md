@@ -28,9 +28,13 @@ public suspend inline fun <R> select(crossinline builder: SelectBuilder<R>.() ->
 
 여러 개의 소스에 데이터를 요청한 뒤 가장 빠른 응답만 얻는 경우
 
-여러 개의 비동기 프로세스로 시작한 뒤, select 함수를 표현식으로 사용, 표현식 내부에서 값 기다리기
+여러 개의 비동기 프로세스로 시작한 뒤, select 함수를 표현식으로 사용, 표현식 내부에서 값 기다린다
 
 select 내부에서는 셀렉트 표현식에서나올 수 있는 값을 명시하는 Deferred 값의 onAwait 함수를 호출
+
+
+
+#### 먼저 끝난 비동기 결과값 하나만 반환
 
 ```kotlin
 suspend fun requestData1() {
@@ -63,14 +67,8 @@ suspend fun main() = coroutineScope {
 // Data2
 ```
 
-
-
-
-
-####
-
 ```kotlin
-suspend fun askMultipleForData() = coroutineScope {
+suspend fun askMultipleForData() = coroutineScope { // 자식 코루틴도 기다리게 됨
     select<String> {
         async { requestData1() }.onAwait { it }
         async { requestData2() }.onAwait { it }
@@ -88,6 +86,8 @@ suspend fun main() = coroutineScope {
 
 
 #### 코루틴끼리 경합 - async와 select
+
+> 경합 - 여러 프로세스/스레드가 공유된 데이터를 읽고 쓰는 작업을 할 때 실행 순서에 따라서 잘못된 값을 읽거나 쓰게 되는 상황
 
 스코프를 명시적으로 취소 해야 함
 
@@ -107,7 +107,7 @@ suspend fun main() = coroutineScope {
 // Data2
 ```
 
-
+위 방법의 해결책 - raceOf 라이브러리
 
 ```kotlin
 suspend fun askMultipleForData() = raceOf({
@@ -169,6 +169,14 @@ fun main() = runBlocking {
     
     coroutineContext.cancelChildren()
 }
+
+// From fooChannel: foo
+// From fooChannel: foo
+// From barChannel: BAR
+// From fooChannel: foo
+// From fooChannel: foo
+// From barChannel: BAR
+// From fooChannel: foo
 ```
 
 #### onSend 사용 예
@@ -203,5 +211,22 @@ fun main() = runBlocking {
         }
     }
 }
+
+// Sent A to 1
+// Sent B to 1
+// Receive A from 1
+// Send C to 1
+// Sent D to 2
+// Received B from 1
+// Sent E to 1
+// Sent F to 2
+// Received C from 1
+// Sent G to 1
+// Received E from 1
+// Sent H to 1
+// Received G from 1
+// Received H from 1
+// Received D from 2
+// Received F from 2
 ```
 

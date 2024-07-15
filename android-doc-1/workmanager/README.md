@@ -7,9 +7,6 @@
 * success, failure, retry 결과값 반환
   * Result.success() / Result.failure() / Result.retry()
   * retry시 정책 및 시간 설정 가능 - [setBackOffCriteria](https://developer.android.com/reference/kotlin/androidx/work/WorkRequest.Builder#setbackoffcriteria)
-  *
-
-
 
 ## WorkRequest
 
@@ -21,7 +18,11 @@
 
 ```kotlin
 val constraints = Constraints.Builder()
+        .setRequiresBatteryNotLow(true)
         .setRequiredNetworkType(NetworkType.CONNECTED)
+        .setRequiresCharging(true)
+        .setRequiresStorageNotLow(true)
+        .setRequiresDeviceIdle(true)
         .build()
 
 // Define the input
@@ -112,3 +113,16 @@ WorkManager.getInstance().getWorkInfoByIdLiveData(uploadWorkRequest.id)
 
 <figure><img src="../../.gitbook/assets/스크린샷 2024-07-15 오후 3.03.55.png" alt=""><figcaption></figcaption></figure>
 
+
+
+
+
+
+
+### 참고
+
+[https://medium.com/androiddevelopers/workmanager-basics-beba51e94048](https://medium.com/androiddevelopers/workmanager-basics-beba51e94048)
+
+[https://developer.android.com/develop/background-work/background-tasks/persistent/getting-started/define-work](https://developer.android.com/develop/background-work/background-tasks/persistent/getting-started/define-work)
+
+[https://developer.android.com/codelabs/android-workmanager?hl=ko#11](https://developer.android.com/codelabs/android-workmanager?hl=ko#11)
